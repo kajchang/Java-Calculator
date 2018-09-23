@@ -11,13 +11,14 @@ import javax.script.ScriptException;
 public class Calculator extends JFrame implements ActionListener {
     JPanel panel = new JPanel(new GridLayout(3, 1));
     JPanel numpad = new JPanel(new GridLayout(2, 5));
-    JPanel operators = new JPanel(new GridLayout(1, 5));
+    JPanel operators = new JPanel(new GridLayout(1, 6));
 
     JButton calculate_button = new JButton("=");
     JButton plus_button = new JButton("+");
     JButton minus_button = new JButton("-");
     JButton mult_button = new JButton("*");
     JButton div_button = new JButton("/");
+    JButton delete_button = new JButton("DEL");
 
     JButton zero_button = new JButton("0");
     JButton one_button = new JButton("1");
@@ -49,65 +50,53 @@ public class Calculator extends JFrame implements ActionListener {
         panel.add(numpad);
         panel.add(operators);
 
-        zero_button.setMnemonic(0);
         zero_button.addActionListener(this);
         numpad.add(zero_button);
 
-        one_button.setMnemonic(1);
         one_button.addActionListener(this);
         numpad.add(one_button);
 
-        two_button.setMnemonic(2);
         two_button.addActionListener(this);
         numpad.add(two_button);
 
-        three_button.setMnemonic(3);
         three_button.addActionListener(this);
         numpad.add(three_button);
 
-        four_button.setMnemonic(4);
         four_button.addActionListener(this);
         numpad.add(four_button);
 
-        five_button.setMnemonic(5);
         five_button.addActionListener(this);
         numpad.add(five_button);
 
-        six_button.setMnemonic(6);
         six_button.addActionListener(this);
         numpad.add(six_button);
 
-        seven_button.setMnemonic(7);
         seven_button.addActionListener(this);
         numpad.add(seven_button);
 
-        eight_button.setMnemonic(8);
         eight_button.addActionListener(this);
         numpad.add(eight_button);
 
-        nine_button.setMnemonic(9);
         nine_button.addActionListener(this);
         numpad.add(nine_button);
 
-        calculate_button.setMnemonic('=');
         calculate_button.addActionListener(this);
         operators.add(calculate_button);
 
-        plus_button.setMnemonic('+');
         plus_button.addActionListener(this);
         operators.add(plus_button);
 
-        minus_button.setMnemonic('-');
         minus_button.addActionListener(this);
         operators.add(minus_button);
 
-        mult_button.setMnemonic('*');
         mult_button.addActionListener(this);
         operators.add(mult_button);
 
-        div_button.setMnemonic('/');
         div_button.addActionListener(this);
         operators.add(div_button);
+
+        delete_button.addActionListener(this);
+        operators.add(delete_button);
 
         setVisible(true);
     }
@@ -115,7 +104,9 @@ public class Calculator extends JFrame implements ActionListener {
     public void actionPerformed (ActionEvent event) {
         Object source = event.getSource();
         if (source == zero_button) {
-            calculation.setText(calculation.getText().concat("0"));
+            if (!calculation.getText().equals("")) {
+                calculation.setText(calculation.getText().concat("0"));
+            }
         } else if (source == one_button) {
             calculation.setText(calculation.getText().concat("1"));
         } else if (source == two_button) {
@@ -135,19 +126,29 @@ public class Calculator extends JFrame implements ActionListener {
         } else if (source == nine_button) {
             calculation.setText(calculation.getText().concat("9"));
         } else if (source == plus_button) {
-            calculation.setText(calculation.getText().concat("+"));
+            if (!calculation.getText().equals("") && !"+-/*".contains(calculation.getText().substring(calculation.getText().length() - 1))) {
+                calculation.setText(calculation.getText().concat("+"));
+            }
         } else if (source == minus_button) {
             calculation.setText(calculation.getText().concat("-"));
         } else if (source == mult_button) {
-            calculation.setText(calculation.getText().concat("*"));
+            if (!calculation.getText().equals("") && !"+-/*".contains(calculation.getText().substring(calculation.getText().length() - 1))) {
+                calculation.setText(calculation.getText().concat("*"));
+            }
         } else if (source == div_button) {
-            calculation.setText(calculation.getText().concat("/"));
+            if (!calculation.getText().equals("") && !"+-/*".contains(calculation.getText().substring(calculation.getText().length() - 1))) {
+                calculation.setText(calculation.getText().concat("/"));
+            }
+        } else if (source == delete_button) {
+            if (calculation.getText().length() > 0) {
+                calculation.setText(calculation.getText().substring(0, calculation.getText().length() - 1));
+            }
         } else if (source == calculate_button) {
             try {
-                calculation.setText(engine.eval(calculation.getText()).toString());
-            } catch (ScriptException e) {
-                System.out.println(e.getMessage());
-            }
+                if (engine.eval(calculation.getText()) != null) {
+                    calculation.setText(engine.eval(calculation.getText()).toString());
+                }
+            } catch (ScriptException e) {}
         }
     }
 
