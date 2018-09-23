@@ -4,9 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
+import javax.script.*;
 
 public class Calculator extends JFrame implements ActionListener {
     JPanel panel = new JPanel(new GridLayout(3, 1));
@@ -130,7 +128,9 @@ public class Calculator extends JFrame implements ActionListener {
                 calculation.setText(calculation.getText().concat("+"));
             }
         } else if (source == minus_button) {
-            calculation.setText(calculation.getText().concat("-"));
+            if (calculation.getText().equals("") || !"+-/*".contains(calculation.getText().substring(calculation.getText().length() - 1))) {
+                calculation.setText(calculation.getText().concat("-"));
+            }
         } else if (source == mult_button) {
             if (!calculation.getText().equals("") && !"+-/*".contains(calculation.getText().substring(calculation.getText().length() - 1))) {
                 calculation.setText(calculation.getText().concat("*"));
